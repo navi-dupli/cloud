@@ -21,8 +21,44 @@ class VistaTasks(Resource):
 
     @jwt_required()
     def post(self):
-        return {},404
+        current_user_id = get_jwt_identity()
+        if 'fileName' not in request.files:
+            return {"ok": False, "mensaje": "El request no contiene el archivo"}
+        file = request.files['fileName']
+        if file.filename == '':
+            return {"ok": False, "mensaje": "El request no contiene el archivo"}
+        if file and _allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+
+            current_format = filename.rsplit('.', 1)[1].upper()
+            task_new = Task(file=f'{datetime.datetime.now().timestamp()}__{file.filename}',
+                            format=current_format,
+                            new_format=request.form["newFormat"].upper(),
+                            usuario=current_user_id)
+            db.session.add(task_new)
+            db.session.commit()
+
+            file.save(os.path.join(UPLOAD_FOLDER, f'{task_new.id}.{current_format.lower()}'))
+            encolar.delay(task_scheme.dump(task_new))
+            return task_scheme.dump(task_new)
+        else:
+            return {"ok": False, "mensaje": "El archivo no esta permitido"}
 
     @jwt_required()
     def get(self):
-        return {},404
+        current_user_id = get_jwt_identity()
+        order = 0
+        max = 10
+        if request.values.get("order"):
+            order = request.values.get("order")
+
+        if request.values.get("max"):
+            max = request.values.get("max")
+        tasks = []
+        if order == 0:
+            tasks = db.session.query(Task).join(Usuario).filter(Usuario.id == current_user_id).order_by(
+                asc(Task.id)).limit(max).all()
+        else:
+            tasks = db.session.query(Task).join(Usuario).filter(Usuario.id == current_user_id).order_by(
+                desc(Task.id)).limit(max).all()
+        return [task_scheme.dump(item) for item in tasks]
