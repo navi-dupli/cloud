@@ -2,6 +2,7 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_restful import Api
 from flask import Flask
+from flask_mail import Mail
 
 from env import POSTGRES_USER, POSTGRES_PW, POSTGRES_URL, POSTGRES_DB
 from modelos import db
@@ -17,11 +18,19 @@ def create_app(config_name):
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['PROPAGATE_EXCEPTIONS'] = True
     app.config['JWT_SECRET_KEY'] = 'frase-secreta-para-cifrar-el-token'
+    app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+    app.config['MAIL_PORT'] = 465
+    app.config['MAIL_USERNAME'] = 'cloudteam35@gmail.com'
+    app.config['MAIL_PASSWORD'] = 'admincloud'
+    app.config['MAIL_USE_TLS'] = False
+    app.config['MAIL_USE_SSL'] = True
 
     return app
 
 
 app = create_app('Cloud_Converter')
+
+mail = Mail(app)
 
 app_context = app.app_context()
 app_context.push()

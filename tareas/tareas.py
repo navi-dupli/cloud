@@ -3,6 +3,8 @@ import os
 from celery import Celery
 from celery.signals import task_postrun
 from pydub import AudioSegment
+from flask_mail import Message
+from app import mail
 
 from env import REDIS_SERVER, REDIS_PORT, UPLOAD_FOLDER, CONVERTED_FOLDER
 from modelos import db, Task, TaskStatus
@@ -18,13 +20,16 @@ def convert_file(json_task):
         convert_format = 'adts'
     given_audio = AudioSegment.from_file(os.path.join(UPLOAD_FOLDER, f'{json_task["id"]}.{format}'),
                                          format=format)
-    given_audio.export(os.path.join(CONVERTED_FOLDER, f'{json_task["id"]}.{new_format}'), format=convert_format)
+    given_audio.export(os.path.join(CONVERTED_FOLDER, f'{json_task["id"]}.{new_format}'), format='wmav2')
 
     print('entra a convertir', json_task['id'])
     return True
 
 
 def send_mail():
+    msg = Message('Hello', sender='cloudteam35@gmail.com', recipients=['nataliesantiago6@gmail.com'])
+    msg.body = "Hello Flask message sent from Flask-Mail"
+    mail.send(msg)
     return True
 
 
