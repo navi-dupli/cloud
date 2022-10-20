@@ -20,7 +20,8 @@ services:
       - "5433:5432"
     volumes:
       - 'database-data:/var/lib/postgresql/data/'
-
+    environment:
+      - POSTGRES_PASSWORD=postgres
 
   redis-service:
     env_file:
@@ -76,6 +77,6 @@ volumes:
   database-data:
     driver: local
   redis_data:
-      driver: local
+    driver: local
   web_data:
     driver: local

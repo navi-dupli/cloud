@@ -1,15 +1,21 @@
 import os
+import smtplib, ssl
 
 from celery import Celery
 from celery.signals import task_postrun
 from pydub import AudioSegment
 from flask_mail import Message
-from app import mail
-
-from env import REDIS_SERVER, REDIS_PORT, UPLOAD_FOLDER, CONVERTED_FOLDER
 from modelos import db, Task, TaskStatus
 
+from env import REDIS_SERVER, REDIS_PORT, UPLOAD_FOLDER, CONVERTED_FOLDER
+
+
 celery_app = Celery('tasks', broker=f'redis://{REDIS_SERVER}:{REDIS_PORT}/0')
+
+
+# Create a secure SSL context
+context = ssl.create_default_context()
+
 
 
 def convert_file(json_task):
@@ -20,16 +26,18 @@ def convert_file(json_task):
         convert_format = 'adts'
     given_audio = AudioSegment.from_file(os.path.join(UPLOAD_FOLDER, f'{json_task["id"]}.{format}'),
                                          format=format)
-    given_audio.export(os.path.join(CONVERTED_FOLDER, f'{json_task["id"]}.{new_format}'), format='wmav2')
+    given_audio.export(os.path.join(CONVERTED_FOLDER, f'{json_task["id"]}.{new_format}'), format=convert_format)
 
     print('entra a convertir', json_task['id'])
     return True
 
 
 def send_mail():
-    msg = Message('Hello', sender='cloudteam35@gmail.com', recipients=['nataliesantiago6@gmail.com'])
-    msg.body = "Hello Flask message sent from Flask-Mail"
-    mail.send(msg)
+    with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context) as server:
+        print("SMTP server")
+        server.login('cloudteam35@gmail.com', 'admincloud')
+        print("SMTP login")
+        server.sendmail('cloudteam35@gmail.com', 'pramirez966@gmail.com', 'Hello Flask message sent from Flask-Mail')
     return True
 
 

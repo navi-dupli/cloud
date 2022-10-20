@@ -2,7 +2,7 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_restful import Api
 from flask import Flask
-from flask_mail import Mail
+
 
 from env import POSTGRES_USER, POSTGRES_PW, POSTGRES_URL, POSTGRES_DB
 from modelos import db
@@ -29,8 +29,6 @@ def create_app(config_name):
 
 
 app = create_app('Cloud_Converter')
-
-mail = Mail(app)
 
 app_context = app.app_context()
 app_context.push()
