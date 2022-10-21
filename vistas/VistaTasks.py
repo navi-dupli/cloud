@@ -11,7 +11,7 @@ from werkzeug.utils import secure_filename
 
 from tareas import encolar
 
-task_scheme = TaskSchema()
+task_schema = TaskSchema()
 
 def _allowed_file(filename):
     return '.' in filename and (filename.rsplit('.', 1)[1].upper() in ALLOWED_EXTENSIONS)
@@ -39,8 +39,8 @@ class VistaTasks(Resource):
             db.session.commit()
 
             file.save(os.path.join(UPLOAD_FOLDER, f'{task_new.id}.{current_format.lower()}'))
-            encolar.delay(task_scheme.dump(task_new))
-            return task_scheme.dump(task_new)
+            encolar.delay(task_schema.dump(task_new))
+            return task_schema.dump(task_new)
         else:
             return {"ok": False, "mensaje": "El archivo no esta permitido"}
 
@@ -61,4 +61,4 @@ class VistaTasks(Resource):
         else:
             tasks = db.session.query(Task).join(Usuario).filter(Usuario.id == current_user_id).order_by(
                 desc(Task.id)).limit(max).all()
-        return [task_scheme.dump(item) for item in tasks]
+        return [task_schema.dump(item) for item in tasks]

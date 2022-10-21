@@ -6,11 +6,11 @@ from pydub import AudioSegment
 
 from build import create_app
 from env import REDIS_SERVER, REDIS_PORT, UPLOAD_FOLDER, CONVERTED_FOLDER
-from modelos import db, Task, TaskStatus
+from modelos import db, Task, TaskStatus, Usuario
+from flask_mail import Mail
+from flask_mail import Message
 
 broker = f'redis://{REDIS_SERVER}:{REDIS_PORT}/0'
-
-
 
 def make_celery(app):
     celery = Celery(app.import_name, broker=broker)
@@ -31,7 +31,7 @@ app_context.push()
 db.init_app(app)
 
 celery_app = make_celery(app)
-
+mail = Mail(app)
 
 def convert_file(json_task):
     format = json_task['format'].lower()
@@ -47,7 +47,10 @@ def convert_file(json_task):
     return True
 
 
-def send_mail():
+def send_mail(recipient, file_name):
+    msg = Message('Conversión del archivo exitosa', sender='cloudteam35@gmail.com', recipients=[recipient])
+    msg.body = f'El archivo {file_name} fue convertido exitosamente'
+    mail.send(msg)
     return True
 
 
@@ -56,7 +59,6 @@ def send_mail():
 @celery_app.task(name="convertir-archivo")
 def encolar(json_task):
     if convert_file(json_task):
-        send_mail()
         new_format = json_task['new_format'].lower()
         task = db.session.query(Task) \
             .filter(Task.id == json_task['id']).first()
@@ -64,6 +66,8 @@ def encolar(json_task):
         task.estado = TaskStatus.PROCESSED
         db.session.add(task)
         db.session.commit()
+        usuario = Usuario.query.get(task.usuario)
+        send_mail(usuario.correo, task.file)
 
 
 @task_postrun.connect
