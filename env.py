@@ -15,7 +15,7 @@ def get_env_variable(name):
 ALLOWED_EXTENSIONS = {'MP3', 'ACC', 'OGG', 'WAV', 'WMA'}
 POSTGRES_URL = os.environ.get("POSTGRES_URL")
 POSTGRES_USER = os.environ.get("POSTGRES_USER")
-POSTGRES_PW = os.environ.get("POSTGRES_PW")
+POSTGRES_PASSWORD = os.environ.get("POSTGRES_PASSWORD")
 POSTGRES_DB = os.environ.get("POSTGRES_DB")
 REDIS_SERVER = os.environ.get("REDIS_SERVER")
 REDIS_PORT = os.environ.get("REDIS_PORT")

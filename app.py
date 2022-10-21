@@ -4,7 +4,6 @@ from flask_restful import Api
 from flask import Flask
 
 from build import create_app
-from env import POSTGRES_USER, POSTGRES_PW, POSTGRES_URL, POSTGRES_DB
 from modelos import db
 from vistas import VistaSingUp, VistaLogIn, VistaTasks, VistaSingleTask, VistaFiles
 

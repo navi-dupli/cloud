@@ -2,20 +2,35 @@ import os
 
 from celery import Celery
 from celery.signals import task_postrun
-from flask_restful import Api
 from pydub import AudioSegment
 
 from build import create_app
 from env import REDIS_SERVER, REDIS_PORT, UPLOAD_FOLDER, CONVERTED_FOLDER
 from modelos import db, Task, TaskStatus
 
+broker = f'redis://{REDIS_SERVER}:{REDIS_PORT}/0'
 
-app = create_app('Cloud_Converter')
+
+
+def make_celery(app):
+    celery = Celery(app.import_name, broker=broker)
+
+    class ContextTask(celery.Task):
+        def __call__(self, *args, **kwargs):
+            with app.app_context():
+                return self.run(*args, **kwargs)
+
+    celery.Task = ContextTask
+    return celery
+
+
+app = create_app('Cloud_Converter_CELERY')
 
 app_context = app.app_context()
+app_context.push()
+db.init_app(app)
 
-celery_app = Celery('tasks', broker=f'redis://{REDIS_SERVER}:{REDIS_PORT}/0')
-
+celery_app = make_celery(app)
 
 
 def convert_file(json_task):
@@ -36,12 +51,14 @@ def send_mail():
     return True
 
 
+
+
 @celery_app.task(name="convertir-archivo")
 def encolar(json_task):
     if convert_file(json_task):
         send_mail()
         new_format = json_task['new_format'].lower()
-        task = db.session.query(Task)\
+        task = db.session.query(Task) \
             .filter(Task.id == json_task['id']).first()
         task.new_file = f'{json_task["id"]}.{new_format}'
         task.estado = TaskStatus.PROCESSED
