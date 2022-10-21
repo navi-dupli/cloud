@@ -39,6 +39,8 @@ def convert_file(json_task):
     convert_format = new_format
     if new_format == 'acc':
         convert_format = 'adts'
+    if new_format == 'wma':
+        convert_format = 'asf'
     given_audio = AudioSegment.from_file(os.path.join(UPLOAD_FOLDER, f'{json_task["id"]}.{format}'),
                                          format=format)
     given_audio.export(os.path.join(CONVERTED_FOLDER, f'{json_task["id"]}.{new_format}'), format=convert_format)
