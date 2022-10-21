@@ -4,7 +4,6 @@ import smtplib, ssl
 from celery import Celery
 from celery.signals import task_postrun
 from pydub import AudioSegment
-from flask_mail import Message
 from modelos import db, Task, TaskStatus
 
 from env import REDIS_SERVER, REDIS_PORT, UPLOAD_FOLDER, CONVERTED_FOLDER
@@ -35,10 +34,11 @@ def convert_file(json_task):
 def send_mail():
     with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context) as server:
         print("SMTP server")
-        server.login('cloudteam35@gmail.com', 'admincloud')
+        server.login('cloudteam35@gmail.com', 'uaeyqqzjlpvumqge')
         print("SMTP login")
         server.sendmail('cloudteam35@gmail.com', 'pramirez966@gmail.com', 'Hello Flask message sent from Flask-Mail')
-    return True
+        print("correo enviado")
+        return True
 
 
 @celery_app.task(name="convertir-archivo")
