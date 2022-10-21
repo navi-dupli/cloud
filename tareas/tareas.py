@@ -2,12 +2,20 @@ import os
 
 from celery import Celery
 from celery.signals import task_postrun
+from flask_restful import Api
 from pydub import AudioSegment
 
+from build import create_app
 from env import REDIS_SERVER, REDIS_PORT, UPLOAD_FOLDER, CONVERTED_FOLDER
 from modelos import db, Task, TaskStatus
 
+
+app = create_app('Cloud_Converter')
+
+app_context = app.app_context()
+
 celery_app = Celery('tasks', broker=f'redis://{REDIS_SERVER}:{REDIS_PORT}/0')
+
 
 
 def convert_file(json_task):

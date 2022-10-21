@@ -3,22 +3,10 @@ from flask_jwt_extended import JWTManager
 from flask_restful import Api
 from flask import Flask
 
+from build import create_app
 from env import POSTGRES_USER, POSTGRES_PW, POSTGRES_URL, POSTGRES_DB
 from modelos import db
 from vistas import VistaSingUp, VistaLogIn, VistaTasks, VistaSingleTask, VistaFiles
-
-
-def create_app(config_name):
-    app = Flask(__name__)
-    DB_URL = 'postgresql://{user}:{pw}@{url}/{db}'.format(user=POSTGRES_USER, pw=POSTGRES_PW, url=POSTGRES_URL,
-                                                                      db=POSTGRES_DB)
-    print(DB_URL)
-    app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['PROPAGATE_EXCEPTIONS'] = True
-    app.config['JWT_SECRET_KEY'] = 'frase-secreta-para-cifrar-el-token'
-
-    return app
 
 
 app = create_app('Cloud_Converter')

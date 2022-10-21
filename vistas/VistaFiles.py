@@ -18,18 +18,16 @@ class VistaFiles(Resource):
     def get(self, filename):
         task = db.session.query(Task).filter(Task.file == filename).first()
 
-        task.new_format = request.values.get('newFormat')
-        task.estado = TaskStatus.UPLOADED
         '''Download file'''
         try:
             if task.estado == TaskStatus.PROCESSED:
-                file_path = os.path.join(f'{CONVERTED_FOLDER}', f'{task.id}.{task.format.lower()}')
+                file_path = os.path.join(f'{CONVERTED_FOLDER}', f'{task.id}.{task.new_format.lower()}')
                 if os.path.exists(file_path):
-                    return send_from_directory(CONVERTED_FOLDER, f'{task.id}.{task.format.lower()}', as_attachment=True)
+                    return send_from_directory(CONVERTED_FOLDER, f'{task.id}.{task.new_format.lower()}', as_attachment=True)
             elif task.estado == TaskStatus.UPLOADED:
-                file_path = os.path.join(f'{UPLOAD_FOLDER}', f'{task.id}.{task.format.lower()}')
+                file_path = os.path.join(f'{UPLOAD_FOLDER}', f'{task.id}.{task.new_format.lower()}')
                 if os.path.exists(file_path):
-                    return send_from_directory(UPLOAD_FOLDER, f'{task.id}.{task.format.lower()}', as_attachment=True)
+                    return send_from_directory(UPLOAD_FOLDER, f'{task.id}.{task.new_format.lower()}', as_attachment=True)
             else:
                 return {}, 404
         except FileNotFoundError:
