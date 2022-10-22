@@ -5,12 +5,13 @@ from celery.signals import task_postrun
 from pydub import AudioSegment
 
 from build import create_app
-from env import REDIS_SERVER, REDIS_PORT, UPLOAD_FOLDER, CONVERTED_FOLDER
+from env import REDIS_SERVER, REDIS_PORT, UPLOAD_FOLDER, CONVERTED_FOLDER, MAIL_NOTIFICATION_ENABLED
 from modelos import db, Task, TaskStatus, Usuario
 from flask_mail import Mail
 from flask_mail import Message
 
 broker = f'redis://{REDIS_SERVER}:{REDIS_PORT}/0'
+
 
 def make_celery(app):
     celery = Celery(app.import_name, broker=broker)
@@ -33,6 +34,7 @@ db.init_app(app)
 celery_app = make_celery(app)
 mail = Mail(app)
 
+
 def convert_file(json_task):
     format = json_task['format'].lower()
     new_format = json_task['new_format'].lower()
@@ -50,12 +52,11 @@ def convert_file(json_task):
 
 
 def send_mail(recipient, file_name):
-    msg = Message('Conversión del archivo exitosa', sender='cloudteam35@gmail.com', recipients=[recipient])
-    msg.body = f'El archivo {file_name} fue convertido exitosamente'
-    mail.send(msg)
+    if MAIL_NOTIFICATION_ENABLED == 'TRUE':
+        msg = Message('Conversión del archivo exitosa', sender='cloudteam35@gmail.com', recipients=[recipient])
+        msg.body = f'El archivo {file_name} fue convertido exitosamente'
+        mail.send(msg)
     return True
-
-
 
 
 @celery_app.task(name="convertir-archivo")

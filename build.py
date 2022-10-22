@@ -11,6 +11,7 @@ def create_app(config_name):
     app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['PROPAGATE_EXCEPTIONS'] = True
+    app.config['JWT_ACCESS_TOKEN_EXPIRES'] = False
     app.config['JWT_SECRET_KEY'] = 'frase-secreta-para-cifrar-el-token'
     app.config['MAIL_SERVER'] = 'smtp.gmail.com'
     app.config['MAIL_PORT'] = 465
