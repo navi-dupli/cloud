@@ -12,7 +12,7 @@ def get_env_variable(name):
 # the values of those depend on your setup
 
 
-ALLOWED_EXTENSIONS = {'MP3', 'ACC', 'OGG', 'WAV', 'WMA'}
+ALLOWED_EXTENSIONS = {'MP3', 'AAC', 'OGG', 'WAV', 'WMA'}
 POSTGRES_URL = os.environ.get("POSTGRES_URL")
 POSTGRES_USER = os.environ.get("POSTGRES_USER")
 POSTGRES_PASSWORD = os.environ.get("POSTGRES_PASSWORD")

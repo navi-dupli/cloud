@@ -43,7 +43,7 @@ def convert_file(json_task):
     format = json_task['format'].lower()
     new_format = json_task['new_format'].lower()
     convert_format = new_format
-    if new_format == 'acc':
+    if new_format == 'aac':
         convert_format = 'adts'
     if new_format == 'wma':
         convert_format = 'asf'
