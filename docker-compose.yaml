@@ -19,7 +19,7 @@ services:
     ports:
       - "5433:5432"
     volumes:
-      - 'database-data:/var/lib/postgresql/data/'
+      - 'database-datastore:/var/lib/postgresql/data/'
 
 
   redis-service:
@@ -73,7 +73,7 @@ services:
       - db-service
 
 volumes:
-  database-data:
+  database-datastore:
     driver: local
   redis_data:
       driver: local

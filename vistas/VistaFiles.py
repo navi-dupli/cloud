@@ -1,3 +1,4 @@
+import logging
 import os
 import re
 
@@ -33,6 +34,7 @@ def _getFile(task):
 class VistaFiles(Resource):
     @jwt_required()
     def get(self, filename):
+        logging.info(f'DOWNLOAD: file--> {filename}')
         task = db.session.query(Task).filter(Task.file == filename).first()
         if task:
             '''Archivo sin convertir'''

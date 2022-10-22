@@ -1,6 +1,7 @@
 import datetime
+import logging
 
-from flask_jwt_extended import  jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from env import ALLOWED_EXTENSIONS, UPLOAD_FOLDER
 from modelos import Task, db, Usuario, TaskSchema
 from flask_restful import Resource
@@ -12,6 +13,7 @@ from werkzeug.utils import secure_filename
 from tareas import encolar
 
 task_schema = TaskSchema()
+
 
 def _allowed_file(filename):
     return '.' in filename and (filename.rsplit('.', 1)[1].upper() in ALLOWED_EXTENSIONS)
@@ -39,7 +41,8 @@ class VistaTasks(Resource):
             db.session.commit()
 
             file.save(os.path.join(UPLOAD_FOLDER, f'{task_new.id}.{current_format.lower()}'))
-            encolar.delay(task_schema.dump(task_new))
+            encolar.delay(task_new.id)
+            logging.info(f'TASK:{task_new.id} - Tarea modificada y encolada ')
             return task_schema.dump(task_new)
         else:
             return {"ok": False, "mensaje": "El archivo no esta permitido"}

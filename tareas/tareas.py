@@ -1,4 +1,8 @@
+import datetime
+import logging
 import os
+import smtplib
+import traceback
 
 from celery import Celery
 from celery.signals import task_postrun
@@ -6,7 +10,7 @@ from pydub import AudioSegment
 
 from build import create_app
 from env import REDIS_SERVER, REDIS_PORT, UPLOAD_FOLDER, CONVERTED_FOLDER, MAIL_NOTIFICATION_ENABLED
-from modelos import db, Task, TaskStatus, Usuario
+from modelos import db, Task, TaskStatus, Usuario, TaskSchema
 from flask_mail import Mail
 from flask_mail import Message
 
@@ -47,7 +51,7 @@ def convert_file(json_task):
                                          format=format)
     given_audio.export(os.path.join(CONVERTED_FOLDER, f'{json_task["id"]}.{new_format}'), format=convert_format)
 
-    print('entra a convertir', json_task['id'])
+    logging.info(f'TASK:{json_task["id"]} - Convirtiendo archivo : {json_task["file"]}')
     return True
 
 
@@ -60,20 +64,28 @@ def send_mail(recipient, file_name):
 
 
 @celery_app.task(name="convertir-archivo")
-def encolar(json_task):
-    if convert_file(json_task):
-        new_format = json_task['new_format'].lower()
-        task = db.session.query(Task) \
-            .filter(Task.id == json_task['id']).first()
-        task.new_file = f'{json_task["id"]}.{new_format}'
-        task.estado = TaskStatus.PROCESSED
-        db.session.add(task)
-        db.session.commit()
-        usuario = Usuario.query.get(task.usuario)
-        send_mail(usuario.correo, task.file)
+def encolar(id_task):
+    task = db.session.query(Task).filter(Task.id == id_task).first()
+    if task:
+        task_scheme = TaskSchema()
+        json_task = task_scheme.dump(task)
+        if convert_file(json_task):
+            new_format = json_task['new_format'].lower()
+            task.new_file = task.file.replace(f'.{task.format.lower()}', f'.{new_format.lower()}')
+            task.estado = TaskStatus.PROCESSED
+            task.processed_timestamp = datetime.datetime.now()
+            db.session.add(task)
+            db.session.commit()
+            usuario = Usuario.query.get(task.usuario)
+            try:
+                send_mail(usuario.correo, task.file)
+                logging.info(f'TASK:{task.id} - Enviando correo a: {usuario.correo}')
+            except Exception as e:
+                logging.error(traceback.format_exc())
 
 
-@task_postrun.connect
+
+@task_postrun.connect()
 def close_session(*args, **kwargs):
     print("CLOSE")
     # db.session.remove()

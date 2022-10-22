@@ -22,6 +22,8 @@ class Task(db.Model):
     new_format = db.Column(db.String(10))
     estado = db.Column(db.Enum(TaskStatus), default=TaskStatus.UPLOADED)
     usuario = db.Column(db.Integer, db.ForeignKey("usuario.id"))
+    processed_timestamp = db.Column(db.DateTime(timezone=True))
+
 
 
 class Usuario(db.Model):
