@@ -15,8 +15,9 @@ def _allowed_file(filename):
 
 
 class VistaSingleTask(Resource):
-    @jwt_required
+    @jwt_required()
     def put(self, id_task):
+        print('tarea', id_task)
         task = db.session.query(Task).filter(Task.id == id_task).first()
         task.new_format=request.values.get('newFormat')
         task.estado=TaskStatus.UPLOADED
@@ -30,15 +31,16 @@ class VistaSingleTask(Resource):
         db.session.commit()
         return task_scheme.dump(task)
 
-    @jwt_required
+    @jwt_required()
     def get(self, id_task):
+        print('tarea-->', id_task)
         task = db.session.query(Task).filter(Task.id == id_task).first()
         if task:
             return task_scheme.dump(task)
         else:
             return {},404
 
-    @jwt_required
+    @jwt_required()
     def delete(self, id_task):
         task = db.session.query(Task).filter(Task.id == id_task).delete()
         db.session.commit()

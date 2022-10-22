@@ -14,7 +14,7 @@ task_scheme = TaskSchema()
 
 
 class VistaFiles(Resource):
-    @jwt_required
+    @jwt_required()
     def get(self, filename):
         task = db.session.query(Task).filter(Task.file == filename).first()
 
