@@ -43,15 +43,12 @@ def convert_file(json_task):
     format = json_task['format'].lower()
     new_format = json_task['new_format'].lower()
     convert_format = new_format
-    input_format = format
     if new_format == 'aac':
         convert_format = 'adts'
     if new_format == 'wma':
         convert_format = 'asf'
-    if format == 'wma':
-        input_format = 'asf'
     given_audio = AudioSegment.from_file(os.path.join(UPLOAD_FOLDER, f'{json_task["id"]}.{format}'),
-                                         format=input_format)
+                                         format=format)
     given_audio.export(os.path.join(CONVERTED_FOLDER, f'{json_task["id"]}.{new_format}'), format=convert_format)
 
     logging.info(f'TASK:{json_task["id"]} - Convirtiendo archivo : {json_task["file"]}')
