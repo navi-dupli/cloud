@@ -25,6 +25,12 @@ Clone el proyecto con su software de confianza o ejecute en terminal
 git clone https://github.com/navi-dupli/cloud.git &&  cd cloud
 ```
 
+Ejecute el siguiente comando para asegurar de que se encuentre en la rama main
+
+```bash
+git checkout main
+```
+
 ### 2. Construya las imagenes de docker
 
 El proyecto está configurado para correr con contenedores de docker y tiene los siguientes servicios 
