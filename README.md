@@ -8,6 +8,9 @@ En esta version a aplicación permite convertir entre los formatos de audio:
 
 - MP3 - AAC - OGG - WAV – WMA
 
+## Documentación
+La documentación correspondiente de la aplicación se encuentra en el siguiente enlace [Ver documentación de la aplicación](https://github.com/navi-dupli/cloud/wiki)
+
 ## Requisitos
 
 Para poder correr correctamente la aplicación asegúrese de tener instalado lo siguiente:
