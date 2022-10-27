@@ -1,0 +1,15 @@
+version: '3.3'
+
+services:
+
+  app-web:
+    env_file:
+      - .env
+    profiles:
+      - web
+      - all
+    build: .
+    volumes:
+      - './storage/:/storage/'
+    ports:
+      - '2000:2000'

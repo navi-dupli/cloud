@@ -1,0 +1,22 @@
+version: '3.3'
+
+services:
+
+  celery-worker:
+    env_file:
+      - .env
+    build: .
+    command:
+      - ./celery-start.sh
+    volumes:
+      - '../storage/:/storage/'
+    ports:
+      - '3000:3000'
+    networks:
+      - core-net
+networks:
+  core-net:
+    external:
+      name: core-net
+
+
