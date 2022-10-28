@@ -5,9 +5,6 @@ services:
   app-web:
     env_file:
       - .env
-    profiles:
-      - web
-      - all
     build: .
     volumes:
       - './storage/:/storage/'
