@@ -1,8 +1,8 @@
 from celery import Celery
 from celery.signals import task_postrun
-from env import REDIS_SERVER,REDIS_SERVER
+from env import REDIS_SERVER,REDIS_PORT
 
-broker = f'redis://{REDIS_SERVER}:{REDIS_SERVER}/0'
+broker = f'redis://{REDIS_SERVER}:{REDIS_PORT}/0'
 
 
 
