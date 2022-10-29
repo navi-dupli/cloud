@@ -47,4 +47,7 @@ class VistaFiles(Resource):
             request_file = 'converted'
             '''Archivo convertido'''
 
-        return _getFile(task, request_file)
+        if task:
+            return _getFile(task, request_file)
+        else:
+            return {},404
