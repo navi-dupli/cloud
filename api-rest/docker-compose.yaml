@@ -6,7 +6,5 @@ services:
     env_file:
       - .env
     build: .
-    volumes:
-      - './storage/:/storage/'
     ports:
-      - '2000:2000'
+      - '80:2000'

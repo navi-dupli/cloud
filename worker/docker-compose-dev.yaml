@@ -4,7 +4,7 @@ services:
 
   celery-worker:
     env_file:
-      - .env
+      - .env-dev
     build: .
     command:
       - ./celery-start.sh
