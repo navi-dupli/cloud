@@ -2,7 +2,7 @@ version: '3.3'
 
 services:
 
-  db-service:
+  dbservice:
     env_file:
       - .env
     profiles:
@@ -38,7 +38,7 @@ services:
     volumes:
       - 'redis_data:/bitnami/redis/data'
     ports:
-      - '127.0.0.1:6379:6379'
+      - '6379:6379'
     networks:
       - core-net
 

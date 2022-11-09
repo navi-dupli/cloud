@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Flask" type="Python.FlaskServer" nameIsGenerated="true">
-    <option name="additionalOptions" value="-p 3000" />
+    <option name="additionalOptions" value="-p 2000" />
     <option name="application" value="flask" />
     <option name="flaskDebug" value="true" />
     <module name="cloud" />
@@ -8,17 +8,33 @@
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
     <envs>
+      <env name="REDIS_SERVER" value="localhost" />
+      <env name="REDIS_PORT" value="6379" />
       <env name="POSTGRES_DB" value="postgres" />
       <env name="POSTGRES_PW" value="postgres" />
       <env name="POSTGRES_URL" value="localhost:5433" />
       <env name="POSTGRES_USER" value="postgres" />
+      <env name="UPLOAD_FOLDER" value="uploads/" />
+      <env name="CONVERTED_FOLDER" value="converts/" />
+      <env name="BUCKET_NAME" value="miso-bucket-navidupli" />
+      <env name="GOOGLE_APPLICATION_CREDENTIALS" value="./api_key2.json" />
     </envs>
     <option name="SDK_HOME" value="$PROJECT_DIR$/../MISW4201-202214-Backend-Grupo20/venv/bin/python3.9" />
-    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/api-rest" />
     <option name="IS_MODULE_SDK" value="false" />
     <option name="ADD_CONTENT_ROOTS" value="true" />
     <option name="ADD_SOURCE_ROOTS" value="true" />
     <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+    <EXTENSION ID="net.ashald.envfile">
+      <option name="IS_ENABLED" value="false" />
+      <option name="IS_SUBST" value="false" />
+      <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+      <option name="IS_IGNORE_MISSING_FILES" value="false" />
+      <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+      <ENTRIES>
+        <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+      </ENTRIES>
+    </EXTENSION>
     <EXTENSION ID="software.aws.toolkits.jetbrains.core.execution.PythonAwsConnectionExtension">
       <option name="credential" />
       <option name="region" />

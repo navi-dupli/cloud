@@ -7,6 +7,7 @@ from flask_restful import Resource
 import os
 from flask import request
 from tareas import encolar
+from utils import StorageUtils
 
 task_scheme = TaskSchema()
 
@@ -22,11 +23,11 @@ class VistaSingleTask(Resource):
         task = db.session.query(Task).filter(Task.id == id_task).first()
         task.new_format = request.values.get('newFormat')
         task.estado = TaskStatus.UPLOADED
-
-        file_path = os.path.join(f'{CONVERTED_FOLDER}', f'{task.id}.{task.new_format.lower()}')
+        # TODO: cambiar la extencion
+        file_path = f'{CONVERTED_FOLDER}{task.id}.aac'
+        print(file_path)
         if task.estado == TaskStatus.PROCESSED:
-            if os.path.exists(file_path):
-                os.remove(file_path)
+            StorageUtils.delete(file_path)
 
         db.session.add(task)
         db.session.commit()

@@ -1,19 +1,22 @@
 import datetime
 import logging
-
-from flask_jwt_extended import jwt_required, get_jwt_identity
-from env import ALLOWED_EXTENSIONS, UPLOAD_FOLDER
-from modelos import Task, db, Usuario, TaskSchema
-from flask_restful import Resource
-from sqlalchemy import desc, asc
 import os
-from flask import request
-from werkzeug.utils import secure_filename
 
+from env import ALLOWED_EXTENSIONS, UPLOAD_FOLDER
+from flask import request
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_restful import Resource
+from google.auth.credentials import Credentials
+from modelos import Task, db, Usuario, TaskSchema
+from sqlalchemy import desc, asc
 from tareas import encolar
+from werkzeug.utils import secure_filename
+from google.cloud import storage
+from google.cloud import storage
+from google.oauth2 import service_account
+from utils import  StorageUtils
 
 task_schema = TaskSchema()
-
 
 def _allowed_file(filename):
     return '.' in filename and (filename.rsplit('.', 1)[1].upper() in ALLOWED_EXTENSIONS)
@@ -40,7 +43,8 @@ class VistaTasks(Resource):
             db.session.add(task_new)
             db.session.commit()
 
-            file.save(os.path.join(UPLOAD_FOLDER, f'{task_new.id}.{current_format.lower()}'))
+            StorageUtils.save(f'{UPLOAD_FOLDER}{task_new.id}.{current_format.lower()}', file.read())
+            #file.save(os.path.join(UPLOAD_FOLDER, f'{task_new.id}.{current_format.lower()}'))
             encolar.delay(task_new.id)
             logging.info(f'TASK:{task_new.id} - Tarea modificada y encolada ')
             return task_schema.dump(task_new)

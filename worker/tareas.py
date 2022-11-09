@@ -1,4 +1,5 @@
 import datetime
+import io
 import logging
 import os
 import traceback
@@ -12,9 +13,12 @@ from env import REDIS_SERVER, REDIS_PORT, UPLOAD_FOLDER, CONVERTED_FOLDER, MAIL_
 from modelos import db, Task, TaskStatus, Usuario, TaskSchema
 from flask_mail import Mail
 from flask_mail import Message
+from utils import StorageUtils
 
 broker = f'redis://{REDIS_SERVER}:{REDIS_PORT}/0'
-#broker = f'redis://localhost:6379/0'
+
+
+# broker = f'redis://localhost:6379/0'
 
 
 def make_celery(app):
@@ -47,16 +51,26 @@ def convert_file(json_task):
         convert_format = 'adts'
     if new_format == 'wma':
         convert_format = 'asf'
-    given_audio = AudioSegment.from_file(os.path.join(UPLOAD_FOLDER, f'{json_task["id"]}.{format}'),
-                                         format=format)
-    given_audio.export(os.path.join(CONVERTED_FOLDER, f'{json_task["id"]}.{new_format}'), format=convert_format)
+
+    original_file_path = f'{UPLOAD_FOLDER}{json_task["id"]}.{format}'
+    original_file_bytes = StorageUtils.read(original_file_path)
+    original_file = io.BytesIO(original_file_bytes)
+
+    given_audio = AudioSegment.from_file_using_temporary_files(file=original_file, format=format)
+
+    new_file_path = f'{CONVERTED_FOLDER}{json_task["id"]}.{new_format}'
+    new_file_bytes =  io.BytesIO()
+    given_audio.export(new_file_bytes, format=convert_format)
+
+    StorageUtils.save(new_file_path, new_file_bytes.getvalue())
 
     logging.info(f'TASK:{json_task["id"]} - Convirtiendo archivo : {json_task["file"]}')
     return True
 
 
-def send_mail(recipient, file_name):
+def send_mail(recipient, file_name,task_id,mail):
     if MAIL_NOTIFICATION_ENABLED == 'TRUE':
+        logging.info(f'TASK:{task_id} - Enviando correo a: {mail}')
         msg = Message('Conversión del archivo exitosa', sender='cloudteam35@gmail.com', recipients=[recipient])
         msg.body = f'El archivo {file_name} fue convertido exitosamente'
         mail.send(msg)
@@ -78,8 +92,7 @@ def encolar(id_task):
             db.session.commit()
             usuario = Usuario.query.get(task.usuario)
             try:
-                send_mail(usuario.correo, task.file)
-                logging.info(f'TASK:{task.id} - Enviando correo a: {usuario.correo}')
+                send_mail(usuario.correo, task.file,task.id,usuario.correo)
             except Exception as e:
                 logging.error(traceback.format_exc())
 
