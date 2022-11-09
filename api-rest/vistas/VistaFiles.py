@@ -23,12 +23,12 @@ def read_file(file_path, file_name):
 def get_file(task,request_file):
     try:
         if request_file == 'original':
-            file_path = os.path.join(f'{CONVERTED_FOLDER}', f'{task.id}.{task.new_format.lower()}')
+            file_path = os.path.join(f'{UPLOAD_FOLDER}', f'{task.id}.{task.format.lower()}')
             print(f'Descargando archivo:{file_path}')
             return read_file(file_path, task.new_file)
         elif request_file == 'converted':
             if task.estado == TaskStatus.PROCESSED:
-                file_path = os.path.join(f'{UPLOAD_FOLDER}', f'{task.id}.{task.format.lower()}')
+                file_path = os.path.join(f'{CONVERTED_FOLDER}', f'{task.id}.{task.new_format.lower()}')
                 print(f'Descargando archivo:{file_path}')
                 return read_file(file_path, task.file)
             else:
