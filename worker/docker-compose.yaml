@@ -10,12 +10,6 @@ services:
       - ./celery-start.sh
     ports:
       - '3000:3000'
-    networks:
-      - core-net
-networks:
-  core-net:
-    external:
-      name: core-net
-    driver: bridge
+
 
 

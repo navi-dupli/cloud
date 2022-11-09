@@ -23,10 +23,10 @@ class VistaSingleTask(Resource):
         task = db.session.query(Task).filter(Task.id == id_task).first()
         task.new_format = request.values.get('newFormat')
         task.estado = TaskStatus.UPLOADED
-        # TODO: cambiar la extencion
-        file_path = f'{CONVERTED_FOLDER}{task.id}.aac'
-        print(file_path)
+
+        file_path = f'{CONVERTED_FOLDER}{task.id}.{task.new_format}'
         if task.estado == TaskStatus.PROCESSED:
+            print(f'Eliminando archivo {task.id}:{file_path}')
             StorageUtils.delete(file_path)
 
         db.session.add(task)
