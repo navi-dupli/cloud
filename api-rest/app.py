@@ -3,7 +3,7 @@ from flask_jwt_extended import JWTManager
 from flask_restful import Api
 from build import create_app
 from modelos import db
-from vistas import VistaSingUp, VistaLogIn, VistaTasks, VistaSingleTask, VistaFiles
+from vistas import VistaSingUp, VistaLogIn, VistaTasks, VistaSingleTask, VistaFiles,Health
 
 
 app = create_app('Cloud_Converter')
@@ -25,6 +25,7 @@ api.add_resource(VistaLogIn, '/api/auth/login')
 api.add_resource(VistaTasks, '/api/tasks')
 api.add_resource(VistaSingleTask, '/api/tasks/<int:id_task>')
 api.add_resource(VistaFiles, '/api/files/<filename>')
+api.add_resource(Health, '/api/health')
 
 
 @app.after_request

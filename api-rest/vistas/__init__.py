@@ -3,3 +3,4 @@ from .VistaTasks import *
 from .VistaSingleTask import *
 from .VistaLogin import *
 from .VistaFiles import *
+from .Health import *
