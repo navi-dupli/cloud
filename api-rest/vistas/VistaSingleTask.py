@@ -1,15 +1,14 @@
 import logging
 
 from flask_jwt_extended import jwt_required
-from env import ALLOWED_EXTENSIONS, CONVERTED_FOLDER
+from env import ALLOWED_EXTENSIONS, CONVERTED_FOLDER,PROJECT_ID,TOPIC
 from modelos import Task, db, TaskSchema, TaskStatus
 from flask_restful import Resource
-import os
 from flask import request
-from tareas import encolar
 from utils import StorageUtils
+from tareas import  publish_messages
 
-task_scheme = TaskSchema()
+task_schema = TaskSchema()
 
 
 def _allowed_file(filename):
@@ -31,16 +30,16 @@ class VistaSingleTask(Resource):
 
         db.session.add(task)
         db.session.commit()
-        encolar.delay(task.id)
+        publish_messages(PROJECT_ID,TOPIC, task_schema.dump(task))
         logging.info(f'TASK:{task.id} - Tarea creada y encolada ')
-        return task_scheme.dump(task)
+        return task_schema.dump(task)
 
     @jwt_required()
     def get(self, id_task):
         logging.info(f'GET: tarea--> {id_task}')
         task = db.session.query(Task).filter(Task.id == id_task).first()
         if task:
-            return task_scheme.dump(task)
+            return task_schema.dump(task)
         else:
             return {}, 404
 

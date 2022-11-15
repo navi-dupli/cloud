@@ -1,2 +1,2 @@
-from .tareas import *
+from .publisher import  *
 

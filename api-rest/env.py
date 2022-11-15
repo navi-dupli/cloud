@@ -23,5 +23,7 @@ UPLOAD_FOLDER = os.environ.get("UPLOAD_FOLDER")
 CONVERTED_FOLDER = os.environ.get("CONVERTED_FOLDER")
 MAIL_NOTIFICATION_ENABLED = os.environ.get("MAIL_NOTIFICATION_ENABLED")
 BUCKET_NAME = os.environ.get("BUCKET_NAME")
+PROJECT_ID = os.environ.get("PROJECT_ID")
+TOPIC = os.environ.get("TOPIC")
 
 
