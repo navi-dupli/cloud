@@ -8,10 +8,12 @@ from flask_restful import Resource
 from modelos import Task, db, Usuario, TaskSchema
 from sqlalchemy import desc, asc
 from werkzeug.utils import secure_filename
-from utils import  StorageUtils
+from utils import StorageUtils
 from tareas import publish_messages
+import json
 
 task_schema = TaskSchema()
+
 
 def _allowed_file(filename):
     return '.' in filename and (filename.rsplit('.', 1)[1].upper() in ALLOWED_EXTENSIONS)
@@ -39,7 +41,9 @@ class VistaTasks(Resource):
             db.session.commit()
 
             StorageUtils.save(f'{UPLOAD_FOLDER}{task_new.id}.{current_format.lower()}', file.read())
-            publish_messages(PROJECT_ID,TOPIC, task_schema.dump(task_new))
+            publish_messages(PROJECT_ID, TOPIC, json.dumps(
+                {"id": task_new.id, "format": task_new.format, "new_format": task_new.new_format,
+                 "file": task_new.file}))
             logging.info(f'TASK:{task_new.id} - Tarea modificada y encolada ')
             return task_schema.dump(task_new)
         else:

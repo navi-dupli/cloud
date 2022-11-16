@@ -24,4 +24,4 @@ RUN chmod +x /app/celery-start.sh
 RUN mkdir -p /storage/uploads
 RUN mkdir -p /storage/converts
 
-#ENTRYPOINT ["celery","-A","tareas.celery", " worker", '--loglevel=INFO']
+ENTRYPOINT ["gunicorn","--bind","0.0.0.0:2000","app:app"]

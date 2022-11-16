@@ -2,20 +2,11 @@ version: '3.3'
 
 services:
 
-  celery-worker:
+  worker:
     env_file:
       - .env-dev
     build: .
-    command:
-      - ./celery-start.sh
     ports:
-      - '3000:3000'
-    networks:
-      - core-net
-networks:
-  core-net:
-    external:
-      name: core-net
-    driver: bridge
+      - '3000:2000'
 
 

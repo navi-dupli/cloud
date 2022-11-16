@@ -2,7 +2,7 @@ import os
 
 from google.cloud import storage
 
-from  google.cloud.storage.blob import Blob
+from google.cloud.storage.blob import Blob
 from env import BUCKET_NAME
 
 
