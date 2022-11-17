@@ -61,30 +61,31 @@ def send_mail(recipient, file_name, task_id):
 
 
 def encolar(id_task):
-    with app.app_context():
-        task = db.session.query(Task).filter(Task.id == id_task).first()
-        if task:
-            task_scheme = TaskSchema()
-            json_task = task_scheme.dump(task)
-            if convert_file(json_task):
-                new_format = json_task['new_format'].lower()
-                task.new_file = task.file.replace(f'.{task.format.lower()}', f'.{new_format.lower()}')
-                task.estado = TaskStatus.PROCESSED
-                task.processed_timestamp = datetime.datetime.now()
-                db.session.add(task)
-                db.session.commit()
-                usuario = Usuario.query.get(task.usuario)
-                try:
-                    send_mail(usuario.correo, task.file, task.new_file)
-                except Exception as e:
-                    logging.error(traceback.format_exc())
-                print("Finalizo conversión", datetime.datetime.now(), task.new_file)
+    task = db.session.query(Task).filter(Task.id == id_task).first()
+    if task:
+        task_scheme = TaskSchema()
+        json_task = task_scheme.dump(task)
+        if convert_file(json_task):
+            new_format = json_task['new_format'].lower()
+            task.new_file = task.file.replace(f'.{task.format.lower()}', f'.{new_format.lower()}')
+            task.estado = TaskStatus.PROCESSED
+            task.processed_timestamp = datetime.datetime.now()
+            db.session.add(task)
+            db.session.commit()
+            usuario = Usuario.query.get(task.usuario)
+            try:
+                send_mail(usuario.correo, task.file, task.new_file)
+            except Exception as e:
+                logging.error(traceback.format_exc())
+            print("Finalizo conversión", datetime.datetime.now(), task.new_file)
 
 @app.route('/receive_messages', methods=['POST'])
 def receive_messages_handler():
+    print("Inicio proceso")
     envelope = json.loads(request.data.decode('utf-8'))
     payload = json.loads(base64.b64decode(envelope['message']['data']))
     encolar(payload["id"])
+    print("Fin proceso")
     # Returning any 2xx status indicates successful receipt of the message.
     return 'OK', 200
 
