@@ -89,5 +89,5 @@ def receive_messages_handler():
     return 'OK', 200
 
 @app.route('/health')
-def get():
+def health():
     return {}, 200
