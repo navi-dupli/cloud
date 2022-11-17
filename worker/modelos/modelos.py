@@ -11,6 +11,7 @@ db = SQLAlchemy()
 class TaskStatus(enum.Enum):
     UPLOADED = "UPLOADED"
     PROCESSED = "PROCESSED"
+    INPROGRESS = "INPROGRESS"
 
 
 class Task(db.Model):

@@ -61,10 +61,13 @@ def send_mail(recipient, file_name, task_id):
 
 
 def encolar(id_task):
-    task = db.session.query(Task).filter(Task.id == id_task).first()
+    task = db.session.query(Task).filter(Task.id == id_task).filter(Task.estado == TaskStatus.UPLOADED).first()
     if task:
         task_scheme = TaskSchema()
         json_task = task_scheme.dump(task)
+        task.estado = TaskStatus.INPROGRESS
+        db.session.add(task)
+        db.session.commit()
         if convert_file(json_task):
             new_format = json_task['new_format'].lower()
             task.new_file = task.file.replace(f'.{task.format.lower()}', f'.{new_format.lower()}')
