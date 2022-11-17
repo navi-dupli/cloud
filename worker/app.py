@@ -87,3 +87,7 @@ def receive_messages_handler():
     encolar(payload["id"])
     # Returning any 2xx status indicates successful receipt of the message.
     return 'OK', 200
+
+@app.route('/health')
+def get(self):
+    return {}, 200
