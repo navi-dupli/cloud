@@ -19,8 +19,6 @@ RUN pip install -r requirements.txt
 # copy project
 COPY . /app/
 
-RUN chmod +x /app/celery-start.sh
-
 RUN mkdir -p /storage/uploads
 RUN mkdir -p /storage/converts
 

@@ -2,14 +2,12 @@ version: '3.3'
 
 services:
 
-  celery-worker:
+  worker:
     env_file:
       - .env
     build: .
-    command:
-      - ./celery-start.sh
     ports:
-      - '3000:3000'
+      - '80:2000'
 
 
 
