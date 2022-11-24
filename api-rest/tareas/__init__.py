@@ -1,2 +1,2 @@
-from .publisher import  *
+from .publisher import *
 

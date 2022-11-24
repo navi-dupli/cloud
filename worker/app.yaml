@@ -1,0 +1,9 @@
+runtime: custom
+service: worker-test
+env: flex
+entrypoint: gunicorn -b :$PORT app:app
+
+resources:
+  cpu: 2
+  memory_gb: 2.3
+  disk_size_gb: 10

@@ -1,0 +1,21 @@
+runtime: python39
+service: api-rest
+entrypoint: gunicorn -b :$PORT app:app
+env_variables:
+  POSTGRES_DB: postgres
+  POSTGRES_PASSWORD: PrQqAPra
+  POSTGRES_URL: 10.108.16.3:5432
+  POSTGRES_USER: postgres
+  REDIS_SERVER: redis-service
+  REDIS_PORT: 6379
+  FLASK_ENV: prod
+  FLASK_DEBUG: 0
+  UPLOAD_FOLDER: uploads/
+  CONVERTED_FOLDER: converts/
+  MAIL_NOTIFICATION_ENABLED: FALSE
+  BUCKET_NAME: miso-bucket-navidupli
+  TOPIC: converter
+  PROJECT_ID: despliegue-basico-miso
+
+vpc_access_connector:
+ name: projects/despliegue-basico-miso/locations/us-central1/connectors/connector-vpc-us-central1

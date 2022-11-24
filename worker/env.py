@@ -25,4 +25,3 @@ MAIL_NOTIFICATION_ENABLED = os.environ.get("MAIL_NOTIFICATION_ENABLED")
 BUCKET_NAME = os.environ.get("BUCKET_NAME")
 PROJECT_ID = os.environ.get("PROJECT_ID")
 SUBSCRIBER = os.environ.get("SUBSCRIBER")
-

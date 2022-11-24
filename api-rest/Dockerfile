@@ -14,7 +14,7 @@ COPY requirements.txt /app/requirements.txt
 RUN pip install -r requirements.txt
 
 # copy project
-COPY .. /app/
+COPY . /app/
 RUN mkdir -p /storage/uploads
 RUN mkdir -p /storage/converts
 
