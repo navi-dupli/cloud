@@ -1,21 +1,31 @@
-runtime: python39
+runtime: python
 service: api-rest
-entrypoint: gunicorn -b :$PORT app:app
-env_variables:
-  POSTGRES_DB: postgres
-  POSTGRES_PASSWORD: PrQqAPra
-  POSTGRES_URL: 10.108.16.3:5432
-  POSTGRES_USER: postgres
-  REDIS_SERVER: redis-service
-  REDIS_PORT: 6379
-  FLASK_ENV: prod
-  FLASK_DEBUG: 0
-  UPLOAD_FOLDER: uploads/
-  CONVERTED_FOLDER: converts/
-  MAIL_NOTIFICATION_ENABLED: FALSE
-  BUCKET_NAME: miso-bucket-navidupli
-  TOPIC: converter
-  PROJECT_ID: despliegue-basico-miso
+instance_class: F2
+env: flex
+entrypoint: gunicorn -b :$PORT --workers 1 --threads 8 --timeout 160 app:app
 
-vpc_access_connector:
- name: projects/despliegue-basico-miso/locations/us-central1/connectors/connector-vpc-us-central1
+runtime_config:
+  python_version: 3.7
+
+env_variables:
+  POSTGRES_DB:
+  POSTGRES_PASSWORD:
+  POSTGRES_URL:
+  POSTGRES_USER:
+  REDIS_SERVER:
+  REDIS_PORT:
+  FLASK_ENV:
+  FLASK_DEBUG:
+  UPLOAD_FOLDER:
+  CONVERTED_FOLDER:
+  MAIL_NOTIFICATION_ENABLED:
+  BUCKET_NAME:
+  TOPIC:
+  PROJECT_ID:
+
+automatic_scaling:
+  min_num_instances: 2
+  max_num_instances: 4
+  cool_down_period_sec: 180
+  cpu_utilization:
+    target_utilization: 0.6
